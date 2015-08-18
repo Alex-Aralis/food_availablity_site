@@ -8,9 +8,7 @@
   <meta name="auther" content="Me">
   
   <link rel="stylesheet" href="fancy.css" title="Fancy Style">
-  <!--[if lt IE 9]>
-    <script src="http://htmlshiv.googlecode.com/svn/trunk/html5.js"></script>
-  <![endif]-->
+  <!--does not work with IE9 or less-->
 </head>
 
 <html lang="en">
@@ -58,7 +56,9 @@
     </label>
   <h2>Button</h2>
     <label id="ButtonLabel">You can click me as much as you want ._. <br>
-    <button onclick="document.getElementById('ButtonLabel').style.color = 'blue'"> Click me! </button>
+    <!-- need way to replace color change button.  serverside???  
+      button onclick="document.getElementById('ButtonLabel').style.color = 'blue'"> Click me! </button>
+    -->
     </label>
   <h2>Input:file</h2>
     <label>Put whatever you want in the box.<br>
@@ -81,8 +81,6 @@
 
     <h2>Introduction</h2>
     <p>In this section, we discuss the <meter low="5" high="10" value="9">lesser known</meter> forest        elephants</p>
-
-    <script src="js/scripts.js"></script>
     
   </section>
 
