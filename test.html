@@ -16,7 +16,8 @@
 <body>
 	
 <header>
-<h1>Look at my sweet logo.</h1>
+	
+<h1 class="border" style="margin:0 0 0 0">Look at my sweet logo.</h1>
 
 <map name="logomap">
   <area shape="rect" coords="0,0,100,98" href="test.html" alt="logo">
@@ -26,14 +27,30 @@
 
 </header>
 
-<nav>
-  <ol>
-    <li><a href="#1" accesskey="H" tabindex=1>Home</a></li>
-    <li><a href="#2" accesskey="A" tabindex=2>About</a></li>
-    <li><a href="#3" accesskey="C" tabindex=3>Contact</a></li>
-  </ol>
-</nav>	
+<div class="leftsidebar">
+ <nav>
+   <ol>
+     <li><a href="#1" accesskey="H" tabindex=1>Home</a></li>
+     <li><a href="#2" accesskey="A" tabindex=2>About</a></li>
+     <li><a href="#3" accesskey="C" tabindex=3>Contact</a></li>
+   </ol>
+ </nav>	
+</div>
 
+
+<div class="rightsidebar">
+  <aside>
+    <header>
+      <h1>The Aside</h1>
+        <p>This is the aside's header.</p>
+    </header>
+  
+    <p><del>This sentence is unrelated to the main flow.</del></p>    
+
+    <s>No, really.</s>
+  </aside>
+</div>
+  
 <div class="container clearfix">
 
 <h1 ID=1 title="The second word in the header is capitalized">Input Section</h1>
@@ -86,16 +103,6 @@
 
   <section>
     <h1>This should be a level higher than the aside</h1>
-    <aside>
-      <header>
-        <h1>The Aside</h1>
-          <p>This is the aside's header.</p>
-      </header>
-  
-      <p><del>This sentence is unrelated to the main flow.</del></p>    
-
-      <s>No, really.</s>
-    </aside>
   </section>
 
   <section ID=2>
