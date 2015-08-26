@@ -1,0 +1,10 @@
+html{position:relative;}
+
+body{position:static; clear:none; margin:0 0 0 0;}
+
+header{background-color:darkorange; color:grey}
+
+div.container{position:relative; overflow:auto}
+div.center{position:static; box-sizing:content-box; margin:0 150px 0 100px; background-color:darkred} 
+div.leftsidebar{position:relative; float:left; width:80px; background-color:lightgrey}
+div.rightsidebar{position:relative; float:right; width:130px; background-color:silver}
