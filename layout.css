@@ -1,0 +1,10 @@
+body{margin:0 0 0 0}
+
+header, footer{background-color:darkorange; color:lightgrey; font-size: 2em}
+
+div.container{position:relative; overflow:auto; box-sizing:border-box}
+div.center{margin:0 20% 0 15%; background-color:darkorange; color:white;}
+div.leftsidebar{float:left; width:15%; background-color:grey; color:darkgreen;}
+div.rightsidebar{float:right; width:20%; background-color:grey; color:darkgreen;}
+
+
