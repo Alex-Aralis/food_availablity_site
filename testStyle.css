@@ -15,15 +15,15 @@ footer:hover{opacity:1}
 div.container{position:relative; z-index:-1; overflow:auto}
 
 div.center{position:static; margin:0 20% 0 15%; background-color:darkred} 
-div.leftsidebar{position:relative; float:left; width:15%; background-color:lightgrey}
+div.leftsidebar{position:relative; float:left; border-radius:25px; box-sizing:border-box; padding:15px 15px 15px 15px; width:15%; background-color:lightgrey}
 div.rightsidebar{position:relative; float:right; width:20%; background-color:silver}
 
 ol{margin:0 0 0 40px; padding: 10px 0 10px 0;}
 
-div.menubar{background-color:darkgrey; color:lightgrey}
-div.menubaritem{position:relative; display:inline-block; width:20%; padding:0.5em 0 0.5em 0; text-align:center}
+div.menubar{background-color:darkgrey; color:lightgrey; text-align:center}
+div.menubaritem{position:relative; display:inline-block; width:20%; min-width:10em; padding:0.5em 0 0.5em 0; text-align:center}
 div.menubaritem:hover{color:white; background-color:black}
-div.menubardropdown{display:none; position:absolute; top:3em; width: 100%; color:lightgrey; background-color:darkgrey;}
+div.menubardropdown{display:none; position:absolute; z-index:2; top:3em; width: 100%; color:lightgrey; background-color:darkgrey;}
 div.menubaritem:hover div.menubardropdown{display:block;}
 div.menubardropdown:hover{display:block;}
 div.menubardropdownitem{padding:0.5em 0 0.5em 0}
