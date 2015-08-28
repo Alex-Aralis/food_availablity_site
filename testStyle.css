@@ -1,22 +1,41 @@
 html{}
 
-body{position:static; clear:none; margin:0 0 0 0; font-style:Arial}
+body{position:relative; clear:none; z-index:-2; margin:0 0 0 0; font-family:Arial; font-size:16px}
 
-header{background-color:darkorange; color:grey}
+h1{margin:0 0 0 0; font-size:3em;}
+h2{margin:0 0 0 0; font-size:1.7em;}
+h3{margin:0 0 0 0; font-size:1.5em;}
 
-div.container{position:relative; overflow:auto}
+header{position:fixed; top:0; left:0; right:0; background-color:darkorange; color:#FFE9E0;}
+div.headerspacer{height:55px}
 
-div.center{position:static; box-sizing:content-box; margin:0 150px 0 100px; background-color:darkred} 
-div.leftsidebar{position:relative; float:left; width:80px; background-color:lightgrey}
-div.rightsidebar{position:relative; float:right; width:130px; background-color:silver}
+footer{position:fixed; bottom:0; right:0; padding:0 4px 0 4px; text-align:right; border-style:solid; border-color:black; border-width: 1px 0 0 1px; background-color:white; opacity:0.7}
+footer:hover{opacity:1}
 
-div.menubar{background-color:darkgrey; color:lightgrey; min-width:900px;}
-div.menubaritem{position:relative; display:inline-block; width:20%; font-size:27px; text-align:center; padding:10px 0 10px 0}
+div.container{position:relative; z-index:-1; overflow:auto}
+
+div.center{position:static; margin:0 20% 0 15%; background-color:darkred} 
+div.leftsidebar{position:relative; float:left; width:15%; background-color:lightgrey}
+div.rightsidebar{position:relative; float:right; width:20%; background-color:silver}
+
+ol{margin:0 0 0 40px; padding: 10px 0 10px 0;}
+
+div.menubar{background-color:darkgrey; color:lightgrey}
+div.menubaritem{position:relative; display:inline-block; width:20%; padding:0.5em 0 0.5em 0; text-align:center}
 div.menubaritem:hover{color:white; background-color:black}
+div.menubardropdown{display:none; position:absolute; top:3em; width: 100%; color:lightgrey; background-color:darkgrey;}
 div.menubaritem:hover div.menubardropdown{display:block;}
 div.menubardropdown:hover{display:block;}
+div.menubardropdownitem{padding:0.5em 0 0.5em 0}
 div.menubardropdownitem:hover{color:white; background-color:black;}
-div.menubardropdown{display:none; position:absolute; top:47px; width: 100%; color:lightgrey; background-color:darkgrey;}
-div.menubardropdownitem{padding:10px 0 10px 0}
 
+.blockcenter{width:auto}
 
+.bottomborderdivider{border-style:dashed; border-width:0 0 2px 0; border-color:black;}
+
+@media screen and (max-width: 600px) {
+	div.leftsidebar{float:none; width:100%}
+	div.rightsidebar{float:none; width:100%}
+	div.center{margin:0 0 0 0}
+}
+	
