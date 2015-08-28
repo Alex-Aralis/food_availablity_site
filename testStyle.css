@@ -1,10 +1,12 @@
 html{}
 
-body{position:relative; clear:none; z-index:-2; margin:0 0 0 0; font-family:Arial; font-size:16px}
+body{position:relative; clear:none; z-index:-3; margin:0 0 0 0; font-family:Arial; font-size:16px}
 
 h1{margin:0 0 0 0; font-size:3em;}
 h2{margin:0 0 0 0; font-size:1.7em;}
 h3{margin:0 0 0 0; font-size:1.5em;}
+
+div.backgroundlayer{position:fixed; top:0; bottom:0; left:0; right:0; z-index:-2; background:url(27original.gif);}
 
 header{position:fixed; top:0; left:0; right:0; background-color:darkorange; color:#FFE9E0;}
 div.headerspacer{height:55px}
@@ -14,7 +16,7 @@ footer:hover{opacity:1}
 
 div.container{position:relative; z-index:-1; overflow:auto}
 
-div.center{position:static; margin:0 20% 0 15%; background-color:darkred} 
+div.center{position:static; margin:0 20% 0 15%; background-color:#E1FFE1} 
 div.leftsidebar{position:relative; float:left; border-radius:25px; box-sizing:border-box; padding:15px 15px 15px 15px; width:15%; background-color:lightgrey}
 div.rightsidebar{position:relative; float:right; width:20%; background-color:silver}
 
