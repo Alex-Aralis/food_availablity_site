@@ -17,16 +17,16 @@ footer:hover{opacity:1}
 div.container{position:relative; z-index:-1; overflow:auto}
 
 div.center{position:static; margin:0 20% 0 15%; background-color:#E1FFE1} 
-div.leftsidebar{position:relative; float:left; border-radius:25px; box-sizing:border-box; padding:15px 15px 15px 15px; width:15%; background-color:lightgrey}
+div.leftsidebar{position:relative; float:left; border-radius:25px; box-sizing:border-box; padding:15px 15px 15px 15px; margin: 20px 0 0 0; width:15%; background-color:lightgrey}
 div.rightsidebar{position:relative; float:right; width:20%; background-color:silver}
 
 ol{margin:0 0 0 40px; padding: 10px 0 10px 0;}
 
 div.menubar{background-color:darkgrey; color:lightgrey; text-align:center}
 div.menubaritem{position:relative; display:inline-block; width:20%; min-width:10em; padding:0.5em 0 0.5em 0; text-align:center}
-div.menubaritem:hover{color:white; background-color:black}
-div.menubardropdown{display:none; position:absolute; z-index:2; top:3em; width: 100%; color:lightgrey; background-color:darkgrey;}
-div.menubaritem:hover div.menubardropdown{display:block;}
+div.menubaritem:hover{color:white; background-color:black;}
+div.menubardropdown{position:absolute; z-index:1; overflow:hidden; top:3em; width: 100%; color:lightgrey; background-color:darkred; max-height:0; transition:max-height 0.8s ease 0.1s;}
+div.menubaritem:hover div.menubardropdown{max-height:500px; z-index:2}
 div.menubardropdown:hover{display:block;}
 div.menubardropdownitem{padding:0.5em 0 0.5em 0}
 div.menubardropdownitem:hover{color:white; background-color:black;}
@@ -40,4 +40,4 @@ div.menubardropdownitem:hover{color:white; background-color:black;}
 	div.rightsidebar{float:none; width:100%}
 	div.center{margin:0 0 0 0}
 }
-	
+
