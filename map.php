@@ -1,4 +1,4 @@
-<!DOCTYPE>
+<!doctype html>
 
 <html>
 <head>
@@ -32,24 +32,17 @@ function initialize() {
 
 function createHeatmapArray(data){
     console.log(data);
-//    var dataDoc = $.parseXML(data);
-//    var $data = $(dataDoc);
     var dataArray = JSON.parse(data);
     length = dataArray.length;
     var coordArray = [];
-    
+   
+    //create array of google.maps.LatLng opbjects, ommiting the null entries 
     for(var i = 0; i < length; i++){
-        coordArray.push(new google.maps.LatLng(dataArray[i]['latitude'], dataArray[i]['longitude']));
+        if(dataArray[i]['latitude'] !== null  && dataArray[i]['longitude'] !== null) 
+        coordArray.push(new google.maps.LatLng(
+            dataArray[i]['latitude'], 
+            dataArray[i]['longitude']));
     }
-
-    console.log(typeof coordArray[0]['latitude']);
-
-    /*
-    $data.find("coord").each(function(index){
-        coordArray.push(new google.maps.LatLng(Number($(this).find("latitude").text()), 
-         Number($(this).find("longitude").text())));
-    });
-    */
 
     return coordArray;
 }
@@ -60,8 +53,8 @@ function createHeatmap(heatmapArray) {
         map: map
     });  
 
-    heatmap.set('radius', 1);
-    heatmap.set('dissipating', false);
+    //heatmap.set('radius', 1);
+    //heatmap.set('dissipating', false);
 }
 
 function updateHeatmap(query){
@@ -78,6 +71,13 @@ $(document).ready(function() {
         createHeatmap(createHeatmapArray(data));
     });
     
+});
+
+//if enter is pressed in the searchbox, press the searchbutton
+$("#searchbox").keyup(function(event){
+    if(event.keyCode == 13){
+        $("#searchbutton").click();
+    }
 });
 
 function search(){

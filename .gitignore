@@ -1,2 +1,5 @@
 #ignore editor temp files
 *~
+
+#ignore log files
+*.log
