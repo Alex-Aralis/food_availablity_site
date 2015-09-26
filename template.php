@@ -3,11 +3,11 @@
 <html>
 
 <head>
-    <?php include "head.html";?>
+    <?php include "components/head.html";?>
 </head>
 
 <body>
-<?php include "menubar.html"; ?>
+<?php include "components/menubar.html"; ?>
 
 </body>
 </html>
