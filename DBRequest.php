@@ -10,7 +10,7 @@ try {
          //as correct types
 
     if(array_key_exists("query", $_POST) && $_POST['query']!=''){
-        $query = PDO::quote($_POST['query']);
+        $query = $conn->quote($_POST['query']);
         $stmt = $conn->query(
              "select latitude,longitude from farmers_markets where $query");
         error_log("query: $query\n", 3, $error_file);

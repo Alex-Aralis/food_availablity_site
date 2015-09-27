@@ -38,10 +38,10 @@ function createHeatmapArray(data){
    
     //create array of google.maps.LatLng opbjects, ommiting the null entries 
     for(var i = 0; i < length; i++){
-        if(dataArray[i]['latitude'] !== null  && dataArray[i]['longitude'] !== null) 
+        if(dataArray[i][0] !== null  && dataArray[i][1] !== null) 
         coordArray.push(new google.maps.LatLng(
-            dataArray[i]['latitude'], 
-            dataArray[i]['longitude']));
+            dataArray[i][0],  //lat
+            dataArray[i][1]));//lng
     }
 
     return coordArray;
