@@ -1,21 +1,3 @@
-<!doctype html>
-
-<html>
-<head>
-<?php include "components/head.html"; ?>
-
-</head>
-
-<body>
-
-<input type="text" id="searchbox"></input>
-<button id="searchbutton" onclick="search()" >Search</button>
-<div id="googleMap" style="height:600px"></div>
-
-
-<script src="http://maps.googleapis.com/maps/api/js?libraries=visualization"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-<script>
 var map,heatmap;
 
 function initialize() {
@@ -31,7 +13,7 @@ function initialize() {
 
 
 function createHeatmapArray(data){
-    console.log(data);
+    //console.log(data);
     var dataArray = JSON.parse(data);
     length = dataArray.length;
     var coordArray = [];
@@ -58,33 +40,49 @@ function createHeatmap(heatmapArray) {
 }
 
 function updateHeatmap(query){
-    $.post("DBRequest.php", {userName:"guest",password:"cashmoney",query:query}, function(data, status){
+    $.post("/php/DBRequest.php", {userName:"guest",password:"cashmoney",query:query}, function(data, status){
         console.log(data);
         heatmap.setData(createHeatmapArray(data));
     });
 }
 
+//makes a string with checkedName=checkedValue pairs
+function getCheckedValues(){
+    var queryblob = "";
+    //iterate through checked checkboxes in the options panel.
+    $("input:checked.options").each(function(index, elem){
+        queryblob += " " + $(elem).attr("name") + "='" + $(elem).val() + "' AND";
+        console.log(queryblob);
+    });
+ 
+    //removing extraneous ' AND' from the end of queryblob
+    queryblob = queryblob.substring(0, queryblob.length - 4);
+    console.log(queryblob);
+    return queryblob;
+}
+
 $(document).ready(function() {
     initialize();
     
-    $.post("DBRequest.php", {userName:"guest",password:"cashmoney"}, function(data, status){
+    $.post("/php/DBRequest.php", {userName:"guest",password:"cashmoney"}, function(data, status){
         createHeatmap(createHeatmapArray(data));
     });
+   
+    //set handler for searchbutton
+    $("#searchbutton").click(function(event){
+        updateHeatmap(getCheckedValues());
+    });
     
+    //if enter is pressed in the searchbox, press the searchbutton
+    $(document).keyup(function(event){
+        if(event.keyCode == 13){
+            updateHeatmap(getCheckedValues());
+        }
+    });
 });
 
-//if enter is pressed in the searchbox, press the searchbutton
-$("#searchbox").keyup(function(event){
-    if(event.keyCode == 13){
-        $("#searchbutton").click();
-    }
-});
 
-function search(){
-    console.log($("#searchbox").val());
-    updateHeatmap($("#searchbox").val());
+
+function search(query){
+    updateHeatmap(query);
 }
-</script>
-
-</body>
-</html>

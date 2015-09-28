@@ -27,7 +27,7 @@ try {
                 //loop through the groups of a column creating checkboxes
                 foreach ($results as $result){
                     //replace flasy groups with "unknown"
-                    echo "<input type='checkbox' name='$name' value='" . ($result[$name] ? $result[$name] : "unknown")  . "'>";
+                    echo "<input type='checkbox' class='options' name='$name' value='" . ($result[$name] ? $result[$name] : "unknown")  . "'>";
                     echo ($result[$name] ? $result[$name] : "unknown") . " ({$result['number']}) <br>";
                     echo "</input>";
                 } 

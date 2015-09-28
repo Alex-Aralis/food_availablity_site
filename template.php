@@ -3,11 +3,31 @@
 <html>
 
 <head>
-    <?php include "components/head.html";?>
+    <?php include "/srv/http/food-availability-site/components/head.html"; ?>
 </head>
 
 <body>
-<?php include "components/menubar.html"; ?>
 
+<?php include "/srv/http/food-availability-site/components/menubar.html"; ?>
+
+<button id="searchbutton">Search</button>
+
+<div class="leftsidebar" >
+    <?php include "/srv/http/food-availability-site/components/options.php"; ?>
+</div>
+
+<div class="center">
+    <?php include "/srv/http/food-availability-site/components/map.html"; ?>
+</div>
+
+<!-- google maps api with visualization libs for the heatmaps -->
+<script src="http://maps.googleapis.com/maps/api/js?libraries=visualization"></script>
+
+<!-- ajax for stuff and things -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<!-- script to initialize and link in the googlemap with the search options 
+     Depends on: googlemaps(with visualization), JQuery-->
+<script src="/javascript/map.js"></script>
 </body>
 </html>
