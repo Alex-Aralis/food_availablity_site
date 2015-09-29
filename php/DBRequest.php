@@ -26,37 +26,72 @@ try {
     //options.php component.
     //this validation uses the falsyness of NULL as a failed result.  
     //the array will not return a true false .:
-    //      valid_column_names[$invalid_column] !== false, but 
-    //      valid_column_names[$invalid_column] == false
-    $valid_column_names = [];
+    //      column_whitelist[$invalid_column] !== false, but 
+    //      column_whitelist[$invalid_column] == false
+    // will casue a E_NOTICE level output when mapping fails
+    $column_whitelist = [];
     foreach($result as $column_name){ 
-        error_log("from dbrequest> " . "valid_column_names construction: $column_name", 0);
-        $valid_column_names[$column_name] = true;
+        error_log("from dbrequest> " . "column_whitelist construction: $column_name", 0);
+        $column_whitelist[$column_name] = true;
     }
-  
-    //it would cause problems if there where a column_name === "guest" or "password"
-    $valid_column_names['guest'] = null;
-    $valid_column_names['password'] = null;
 
-    //create WHERE condition text for the prepare sanitized by valid_column_names 
-    //and an array to bind to the prepare.
-    $prep_value_array = [];
-    $prep_query_string = '';
-    foreach($_POST as $column_name => $condition){
-        error_log("from dbrequest> " . "iterating through _POST: $column_name => $condition", 0);
-        if($valid_column_names[$column_name]){
-            error_log("from dbrequest> " . "column added!!!: $column_name => $condition", 0);
-            $prep_query_string += " $column_name=:$column_name AND ";
-            $prep_value_array[':'.$column_name] =  $condition;
+    //returns true for a subset of the sql comparison operators
+    function isBooleanOperator($operator){
+        //breaks unneeded because return ends the function
+        switch($operator){
+            case '=':
+            case '<':
+            case '>':
+            case '<=':
+            case '>=': 
+            case '!=':
+                return true;
+            default:
+                return false;
         }
     }
+
+    //explode _POST['query'] into conditional chunks seperated by spaces
+    $raw_query_conditions = explode(' ', $_POST['query']);
+
+    //create WHERE condition text for the prepare sanitized by column_whitelist 
+    //and an array to bind to the prepare.
+    $prep_query_string = '';
+
+    //create a non-hashed array (only int ref's allowed)
+    $raw_condition_segments = new SplFixedArray(3);
+
+    //array that will hold 'bindpoint' => variable mapping
+    $prep_value_array = [];
+ 
+    //create
+    foreach($raw_query_conditions as $raw_condition){
+        error_log("from dbrequest> " . "iterating through conditions: $raw_condition", 0);
+        
+        //break apart comma seperated conditional parts
+        //[0] => column name
+        //[1] => conditional operator
+        //[2] => value
+        $raw_condition_segments = explode(',', $raw_condition);
+        if($column_whitelist[$raw_condition_segments[0]] && isBooleanOperator($raw_condition_segments[1])){
+            error_log("from dbrequest> " . "column added!!!: {$raw_condition_segments[0]}", 0);
+            $prep_query_string .= $raw_condition_segments[0] . 
+                $raw_condition_segments[1] .":" . $raw_condition_segments[0] . " AND ";
+            $prep_value_array[':'.$raw_condition_segments[0]] =  $raw_condition_segments[2];
+        }
+    }
+   
+    //$raw_condition_segments = null;
     
+
     error_log("from dbrequest> " . "prep_query_string: $prep_query_string", 0);
     
-    //if there were conditions sent
+    //if _POST['query'] had any valid conditions
     if($prep_query_string){ 
         //removing the extraneous " AND "
-        $prep_query_string = $prep_query_string.substr(0, strlen($prep_query_string) - 5);
+        $prep_query_string = substr($prep_query_string, 0, strlen($prep_query_string) - 5);
+
+        error_log("from dbrequest> " . "prep_query_string before prepare: $prep_query_string", 0);
 
         //prepare the query
         $stmt = $conn->prepare("select latitude,longitude from farmers_markets where $prep_query_string");
@@ -64,8 +99,8 @@ try {
         //bind the variables and execute the statment.
         $stmt->execute($prep_value_array);
 
-    }else{//if there were no conditions do a simple query
-        //no user input so no prep, and no need for execute
+    }else{//if there were no 
+        //no user input so no prep, execute proformed implicetly by query
         $stmt = $conn->query("select latitude,longitude from farmers_markets");
     }
     
@@ -94,7 +129,7 @@ try {
     */
 
 } catch (PDOException $e) {
-    error_log("Error in map.php: " . $e->getMessage(), 0);
+    error_log("Error in DBRequest PDO: " . $e->getMessage(), 0);
 }
 
 $conn = null;
