@@ -8,7 +8,7 @@ try {
     $query = $conn->query("select column_name, data_type from information_schema.columns where table_name='farmers_markets'");
 
     $column_names = $query->fetchAll(PDO::FETCH_NUM);
-
+    
     //loop through the column names in farmers_markets creating <details> elements
     //<details> only works in chrome and safari currently
     foreach ($column_names as $row){

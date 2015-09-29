@@ -13,7 +13,7 @@ function initialize() {
 
 
 function createHeatmapArray(data){
-    //console.log(data);
+    console.log(data);
     var dataArray = JSON.parse(data);
     length = dataArray.length;
     var coordArray = [];
@@ -46,17 +46,17 @@ function updateHeatmap(query){
     });
 }
 
-//makes a string with checkedName=checkedValue pairs
+//makes a string with checkedName,=,checkedValue pairs
 function getCheckedValues(){
     var queryblob = "";
     //iterate through checked checkboxes in the options panel.
     $("input:checked.options").each(function(index, elem){
-        queryblob += " " + $(elem).attr("name") + "='" + $(elem).val() + "' AND";
+        queryblob += $(elem).attr("name") + ",=," + $(elem).val() + " ";
         console.log(queryblob);
     });
  
-    //removing extraneous ' AND' from the end of queryblob
-    queryblob = queryblob.substring(0, queryblob.length - 4);
+    //removing extraneous ' ' from the end of queryblob
+    queryblob = queryblob.substring(0, queryblob.length - 1);
     console.log(queryblob);
     return queryblob;
 }
@@ -82,7 +82,7 @@ $(document).ready(function() {
 });
 
 
-
 function search(query){
     updateHeatmap(query);
 }
+

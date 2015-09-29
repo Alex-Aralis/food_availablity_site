@@ -16,7 +16,7 @@ footer:hover{opacity:1}
 
 div.container{position:relative; z-index:-1; overflow:auto}
 
-div.center{position:static; margin:0 0 0 20%; background-color:#E1FFE1} 
+div.center{position:static; margin:0 0 0 20%; padding: 10px 10px 10px 10px; background-color:#E1FFE1} 
 div.leftsidebar{position:relative; float:left; border-radius:25px; box-sizing:border-box; padding:15px 15px 15px 15px; margin: 20px 0 0 0; width:20%; background-color:lightgrey}
 div.rightsidebar{position:relative; float:right; width:20%; background-color:silver}
 

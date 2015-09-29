@@ -1,5 +1,6 @@
 #ignore editor temp files
 *~
+*.swp
 
 #ignore log files
 *.log

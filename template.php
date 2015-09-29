@@ -10,9 +10,9 @@
 
 <?php include "/srv/http/food-availability-site/components/menubar.html"; ?>
 
-<button id="searchbutton">Search</button>
 
 <div class="leftsidebar" >
+    <button id="searchbutton" style="margin:auto">Search</button>
     <?php include "/srv/http/food-availability-site/components/options.php"; ?>
 </div>
 
