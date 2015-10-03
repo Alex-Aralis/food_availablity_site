@@ -16,13 +16,12 @@ class safe_db {
     private $sanatized_parsed_sql;
 
     function __Construct($dbtype, $dbhost, $dbname, $dbuser, $dbpassword, 
-        $token_whitelist = array(
+            $token_whitelist = array(
             "SELECT", "expr_type", "alias", "base_expr", 
             "sub_tree", "delim", "FROM", "table", 
             "no_quotes", "parts", "hints", "ref_type",
-            "WHERE", "join_type", "ref_clause"))
-        {
-        global $conn, $parser, $creator, $DEFAULT_TOKEN_WHITELIST;
+            "WHERE", "join_type", "ref_clause")){
+        global $conn, $parser, $creator;
 
         //create PDO connecion object
         $conn = new PDO("$dbtype:host=$dbhost;dbname=$dbname", $dbuser, $dbpassword);
@@ -33,8 +32,6 @@ class safe_db {
     
         //returns fetches as correct type if the mysql type exists in php
         $conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
-       
-        print_r($token_whitelist);   
        
         //set the token tester
         $this->replace_whitelist($token_whitelist);
@@ -94,8 +91,6 @@ class safe_db {
                     $sanatized_parsed_sql[$token] = $value;
                 }
             }else{
-                echo "DELETING $token => $value \n";
-                echo "new value: $value or {$parsed_sql[$token]}\n";
                 $new_prunings += 1;
             }
         }
@@ -114,6 +109,12 @@ class safe_db {
         $creator->create($sanatized_parsed_sql);
    
         return $prunings;
+    }
+
+    public function get_conn(){
+       global $conn;
+ 
+       return $conn;
     }
 
     public function get_prunings(){
@@ -137,7 +138,7 @@ class safe_db {
     public function execute(){
         global $conn;
         
-        return $conn->query(get_sanatized_sql());
+        return $conn->query($this->get_sanatized_sql());
     }
 
 }

@@ -51,12 +51,12 @@ function getCheckedValues(){
     var queryblob = "";
     //iterate through checked checkboxes in the options panel.
     $("input:checked.options").each(function(index, elem){
-        queryblob += $(elem).attr("name") + ",=," + $(elem).val() + " ";
+        queryblob += $(elem).attr("name") + "='" + $(elem).val() + "' AND ";
         console.log(queryblob);
     });
  
-    //removing extraneous ' ' from the end of queryblob
-    queryblob = queryblob.substring(0, queryblob.length - 1);
+    //removing extraneous ' AND ' from the end of queryblob
+    queryblob = queryblob.substring(0, queryblob.length - 5);
     console.log(queryblob);
     return queryblob;
 }
