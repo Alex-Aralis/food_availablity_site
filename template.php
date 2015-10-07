@@ -12,7 +12,7 @@
 
 
 <div class="leftsidebar" >
-    <button id="searchbutton" style="margin:auto">Search</button>
+    <button id="searchbutton" style="margin:auto; display:block">Search</button>
     <?php include "/srv/http/food-availability-site/components/options.php"; ?>
 </div>
 

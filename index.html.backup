@@ -1,0 +1,9 @@
+<p>
+The index page.
+</p>
+
+<?php
+echo "<p>";
+echo "this page is a php script";
+echo "</p>";
+?>

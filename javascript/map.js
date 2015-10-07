@@ -1,6 +1,6 @@
 var map,heatmap;
 
-function initialize() {
+function initMap() {
     var mapOpt = { 
         center:new google.maps.LatLng(38.8833, -100.0167),
         zoom:4,
@@ -25,7 +25,9 @@ function createHeatmapArray(data){
             dataArray[i][0],  //lat
             dataArray[i][1]));//lng
     }
-
+    
+    setMapTitle(length);
+     
     return coordArray;
 }
 
@@ -39,40 +41,64 @@ function createHeatmap(heatmapArray) {
     //heatmap.set('dissipating', false);
 }
 
-function updateHeatmap(query){
-    $.post("/php/DBRequest.php", {userName:"guest",password:"cashmoney",query:query}, function(data, status){
-        console.log(data);
+function setMapTitle(coordsCardinality){
+    $("h2.mapHeader").text("(" + coordsCardinality + ")");
+}
+
+function initHeatmap(sql){
+    $.post("/php/DBRequest.php", {userName:"guest",password:"cashmoney", sql:sql}, function(data, status){
+        createHeatmap(createHeatmapArray(data));
+    }); 
+
+}
+
+function updateHeatmap(sql){
+    $.post("/php/DBRequest.php", {userName:"guest",password:"cashmoney",sql:sql}, function(data, status){
         heatmap.setData(createHeatmapArray(data));
     });
 }
 
 //makes a string with checkedName,=,checkedValue pairs
 function getCheckedValues(){
-    var queryblob = "";
+    var whereblob = "";
     //iterate through checked checkboxes in the options panel.
     $("input:checked.options").each(function(index, elem){
-        queryblob += $(elem).attr("name") + "='" + $(elem).val() + "' AND ";
-        console.log(queryblob);
+        whereblob += $(elem).attr("name") + "='" + $(elem).val() + "' AND ";
+        console.log(whereblob);
     });
  
-    //removing extraneous ' AND ' from the end of queryblob
-    queryblob = queryblob.substring(0, queryblob.length - 5);
-    console.log(queryblob);
-    return queryblob;
+    //removing extraneous ' AND ' from the end of whereblob
+    if(whereblob !== ''){
+        whereblob = whereblob.substring(0, whereblob.length - 5);
+        console.log(whereblob);
+    }
+
+    return whereblob;
 }
 
 $(document).ready(function() {
-    initialize();
-    
-    $.post("/php/DBRequest.php", {userName:"guest",password:"cashmoney"}, function(data, status){
-        createHeatmap(createHeatmapArray(data));
-    });
-   
+    //initialize googlemap
+    initMap();
+     
+    //initialize heatmap and submit it to googlemap
+    initHeatmap("select latitude,longitude from farmers_markets");
+  
     //set handler for searchbutton
     $("#searchbutton").click(function(event){
-        updateHeatmap(getCheckedValues());
+        updateHeatmap("select latitude, longitude from farmers_markets where " + getCheckedValues());
     });
     
+    //update heatmap if checkbox is changed.
+    $("input:checkbox.options").change(function (){
+        var whereblob = getCheckedValues();
+            updateHeatmap("select latitude, longitude from farmers_markets where " + getCheckedValues());
+        if(whereblob === ''){ 
+            updateHeatmap("select latitude, longitude from farmers_markets");
+        }else{
+
+        }
+    });
+        
     //if enter is pressed in the searchbox, press the searchbutton
     $(document).keyup(function(event){
         if(event.keyCode == 13){
@@ -80,9 +106,4 @@ $(document).ready(function() {
         }
     });
 });
-
-
-function search(query){
-    updateHeatmap(query);
-}
 

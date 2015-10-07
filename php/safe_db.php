@@ -13,7 +13,7 @@ class safe_db {
     private $prunings;
     private $dbname;
     private $token_tester;
-    private $sanatized_parsed_sql;
+    private $sanitized_parsed_sql;
 
     function __Construct($dbtype, $dbhost, $dbname, $dbuser, $dbpassword, 
             $token_whitelist = array(
@@ -77,7 +77,7 @@ class safe_db {
         return $creator->created;
     }
 
-    private function sanatize_parsed_sql($parsed_sql, &$sanatized_parsed_sql){
+    private function sanitize_parsed_sql($parsed_sql, &$sanitized_parsed_sql){
         global $token_tester;
 
         $new_prunings = 0;
@@ -85,10 +85,10 @@ class safe_db {
         foreach($parsed_sql as $token => $value){
             if (is_int($token) || $token_tester[$token]){
                 if(gettype($value) === "array"){
-                    $sanatized_parsed_sql[$token] = [];
-                    $new_prunings += $this->sanatize_parsed_sql($parsed_sql[$token], $sanatized_parsed_sql[$token]);
+                    $sanitized_parsed_sql[$token] = [];
+                    $new_prunings += $this->sanitize_parsed_sql($parsed_sql[$token], $sanitized_parsed_sql[$token]);
                 }else{
-                    $sanatized_parsed_sql[$token] = $value;
+                    $sanitized_parsed_sql[$token] = $value;
                 }
             }else{
                 $new_prunings += 1;
@@ -98,15 +98,15 @@ class safe_db {
          return $new_prunings;
      }
     
-    public function sanatize_sql($raw_sql){
-        global $prunings, $creator, $sanatized_parsed_sql;
+    public function sanitize_sql($raw_sql){
+        global $prunings, $creator, $sanitized_parsed_sql;
 
         $raw_parsed_sql = $this->parse_sql($raw_sql);
         
-        $sanatized_parsed_sql = [];
-        $prunings = $this->sanatize_parsed_sql($raw_parsed_sql, $sanatized_parsed_sql);
+        $sanitized_parsed_sql = [];
+        $prunings = $this->sanitize_parsed_sql($raw_parsed_sql, $sanitized_parsed_sql);
 
-        $creator->create($sanatized_parsed_sql);
+        $creator->create($sanitized_parsed_sql);
    
         return $prunings;
     }
@@ -123,22 +123,22 @@ class safe_db {
         return $prunings;
     }
 
-    public function get_sanatized_sql(){
+    public function get_sanitized_sql(){
         global $creator;
 
         return $creator->created;
     }
 
     public function get_safe_parsed_sql(){
-        global $sanatized_parsed_sql;
+        global $sanitized_parsed_sql;
         
-        return $sanatized_parsed_sql;
+        return $sanitized_parsed_sql;
     }
 
     public function execute(){
         global $conn;
         
-        return $conn->query($this->get_sanatized_sql());
+        return $conn->query($this->get_sanitized_sql());
     }
 
 }
