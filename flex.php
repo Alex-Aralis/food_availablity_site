@@ -105,6 +105,12 @@
     Some right side bar info. <br>
 </div>
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<script>
+    <?php include '/srv/http/food-availability-site/javascript/flexheader.js'; ?>
+</script>
+
 </body>
 </html>
 

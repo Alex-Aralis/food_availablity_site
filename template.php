@@ -23,7 +23,7 @@
 <!-- google maps api with visualization libs for the heatmaps -->
 <script src="http://maps.googleapis.com/maps/api/js?libraries=visualization"></script>
 
-<!-- ajax for stuff and things -->
+<!-- jQuery for stuff and things -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 
 <!-- script to initialize and link in the googlemap with the search options 
