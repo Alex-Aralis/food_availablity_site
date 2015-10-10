@@ -22,11 +22,21 @@
     </div>
 
     <div class="navbaritemdropdown" name="dropdown2">
-        something <br>
-        else
+        <div class="navbar">
+            <div class="navbaritem" dropdown="dropdown2/dropdown1"> d2d1 </div>
+            <div class="navbaritem" dropdown="dropdown2/dropdown2"> d2d2 </div>
+            <div class="navbaritem" dropdown="dropdown2/dropdown3"> d2d3 </div>
+        </div>
+
+        <div class="navbardropdowncontainer">
+            <div class="dropdowntopshadow"></div>
+            <div class="navbaritemdropdown" name="dropdown2/dropdown1"> level 2.1 <br> content. </div>
+            <div class="navbaritemdropdown" name="dropdown2/dropdown2"> level 2.2 <br> content. </div>
+            <div class="navbaritemdropdown" name="dropdown2/dropdown3"> level 2.3 <br> content. </div>
+        </div>
     </div>
 
-    <div class="navbaritemdropdown" name="dropdown3">
+    <div class="navbaritemdropdown" name="dropdown1">
         this <br>
         is <br>
         another thing
