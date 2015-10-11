@@ -9,11 +9,11 @@
 <body>
 
 <header>
-    <?php include "/srv/http/food-availability-site/components/flexheader.html"; ?>
+    <?php include "/srv/http/food-availability-site/components/flexheader.php"; ?>
 </header>
 
 <div class="headerspacer">
-    <?php include "/srv/http/food-availability-site/components/flexheader.html"; ?>
+    <?php include "/srv/http/food-availability-site/components/flexheader.php"; ?>
 </div>
 
 <div class="main">

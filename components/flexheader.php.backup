@@ -1,0 +1,86 @@
+<div class="headercontent">
+    <div class="title"><i>flex</i> Demo</div>
+    <div class="navbar">    
+        <div class="navbaritem" openupitemcontainer="ou1"> Link 1 </div>
+        <div class="navbaritem" openupitemcontainer="ou2"> Link 2 </div>
+        <div class="navbaritem" openupitemcontainer="/"> Files </div>
+        <div class="navbaritem" openupitemcontainer="ou4"> a longer title </div>
+        <div class="navbaritem" openupitemcontainer="ou5"> Link 5 </div>
+        <div class="navbaritem" openupitemcontainer="ou4"> Link 6 </div>
+        
+    </div>
+</div>
+
+<div class="openupcontainer">
+    <div class="openuptopshadow"></div>
+
+    <div class="openuplimiter">
+
+    <div class="openupitemcontainer" name="ou1">
+        <div class="openupitem">
+        something <br>
+        in the drop <br>
+        down
+        <div style="height:300px; width:200px; background-color:orange;">an inserted block</div>
+        </div>
+    </div>
+
+    <div class="openupitemcontainer" name="ou2">
+        <div class="openupitem">
+            <div class="navbar">
+                <div class="navbaritem" openupitemcontainer="ou2/ou1"> d2d1 </div>
+                <div class="navbaritem" openupitemcontainer="ou2/ou2"> d2d2 </div>
+                <div class="navbaritem" openupitemcontainer="ou2/ou3"> d2d3 </div>
+            </div>
+        </div>
+    </div>
+
+        <div class="openupcontainer">
+            <div class="openuptopshadow"></div>
+
+            <div class="openupitemcontainer" name="ou2/ou1">
+                <div class="openupitem">
+                    level 2.1 <br> content. 
+                </div>
+            </div>
+    
+            <div class="openupitemcontainer" name="ou2/ou2">
+                <div class="openupitem">
+                    level 2.2 <br> content. 
+                </div>
+            </div>
+    
+            <div class="openupitemcontainer" name="ou2/ou3">
+                <div class="openupitem">
+                    level 2.3 <br> content. 
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <?php 
+        include '/srv/http/food-availability-site/php/files_openup.php';
+    ?>
+
+    <div class="openupitemcontainer" name="ou1">
+        <div class="openupitem">
+        this <br>
+        is <br>
+        another thing
+        </div>
+    </div>
+
+    <div class="openupitemcontainer" name="ou4">
+        <div class="openupitem">
+        something <br>
+        pointed to twice
+        </div>
+    </div>
+
+    <div class="openupitemcontainer" name="ou5">
+        <div class="openupitem">
+        the last thing
+        </div>
+    </div>
+
+</div>
