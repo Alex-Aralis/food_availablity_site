@@ -1,17 +1,37 @@
 $(document).ready(function(){
-    $("div.navbaritem").click(function(){
-        $(this).toggleClass("selectednavbaritem");
+    $("div.navbaritem[link]").click(function(){
+        $("div.navbaritem.selectednavbaritem")
+            .removeClass("selectednavbaritem");
 
-        $(this).siblings().removeClass("selectednavbaritem");
+        //close all openupshutters
+        $("div.openupshutter.openuptransition")
+            .removeClass("openuptransition");
+
+        //close all grouppadding
+        $("div.openupgrouppadding.openuppaddingtransition")
+            .removeClass("openuppaddingtransition");
     });
 
     $("div.navbaritem[openupshutter][openupgroup]").click(function(){
         console.log($(this).attr("openupgroup"));
         console.log($(this).attr("openupshutter"));
 
-        //close all non selected navbar containing shutters
+        //toggle current navbaritem
+        $(this).toggleClass("selectednavbaritem");
+
+        //unselect all not clicked navbaritems on the current
+        //navbar
+        $(this).siblings().removeClass("selectednavbaritem");
+
+        //unselect all lower level navbaritems
         $("div.openupgroup[name='" + $(this).attr("openupgroup") + 
-            "'] > div.openupshutter:not([name='" + $(this).attr("openupshutter") + "'])")
+            "'] div.navbar > div.navbaritem.selectednavbaritem")
+            .removeClass("selectednavbaritem");
+       
+        //close all non selected navbar containing shutters inside of all
+        //lower levels of grouping
+        $("div.openupgroup[name='" + $(this).attr("openupgroup") + 
+            "'] div.openupshutter:not([name='" + $(this).attr("openupshutter") + "'])")
             .removeClass("openuptransition"); 
 
         //toggle selected navbar shutter
@@ -21,34 +41,11 @@ $(document).ready(function(){
         //open lower shadow padding on selected grouping
         $("div.openupgroup[name='" + $(this).attr("openupgroup") + "'] > div.openupgrouppadding")
             .addClass("openuppaddingtransition");
-  
+     
         //if the only open shutter is being closed, close the lower shadow padding.
+        //on all lower openupgroup levels
         $("div.openupgroup[name='" + $(this).attr("openupgroup") + 
-            "']:not(:has(div.openupshutter.openuptransition)) > div.openupgrouppadding")
+            "']:not(:has(div.openupshutter.openuptransition)) div.openupgrouppadding")
             .removeClass("openuppaddingtransition");
     });
-
-/*
-    $("div.navbaritem[openupshutter]").mouseleave(function(){
-        $("div.openupshutter[name='" + $(this).attr("openupshutter") + "']")
-            .removeClass("openuptransition");
-
-        $("div.openupgroup[name='" + $(this).attr("openupgroup") + "']")
-            .removeClass("openuppaddingtransition");
-    });
-
-    $("div.openupshutter").mouseenter(function(){
-       $("div.openupshutter[name='" + $(this).attr("name") + "']")
-           .addClass("openuptransition");
-    });
-
-//    $("div.openupshutter").mouseleave(function(){
-//       $("div.openupshutter[name='" + $(this).attr("name") + "']")
-//           .removeClass("openuptransition");
-//    });
-
-    $("div.openuplimiter").mouseleave(function(){
-        $("div.openupshutter.openuptransition")
-            .removeClass("openuptransition");
-    });*/
 });

@@ -55,5 +55,3 @@
 <div class="openuptopshadow"></div>
 <div class="openupbottomshadow"></div>
 </div>
-</div>
-</div>
