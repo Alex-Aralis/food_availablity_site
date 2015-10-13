@@ -10,7 +10,6 @@
     </div>
 </div>
 
-<div class="shadowbox">
 <div class="openuplimiter">
     <div class="openupgroup" name="main">
         <div class="openupshutter" name="ou3">
@@ -50,8 +49,10 @@
                     <div class="openuppaddingshadow"></div>
                 </div>
                 </div>
+
+        <div class="openuptopshadow"></div>
+        <div class="openupgrouppadding">
+           <div class="openuppaddingshadow"></div>
     </div>
 </div>
-<div class="openuptopshadow"></div>
-<div class="openupbottomshadow"></div>
 </div>

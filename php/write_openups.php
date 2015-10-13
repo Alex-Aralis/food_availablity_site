@@ -16,7 +16,7 @@ function write_openups($dir_array, $PWD){
     foreach($dir_array as $filename => $subarray){
         if(is_null($subarray)){
             //if not a directory
-            $file_openups .=  "<div class='navbaritem' link='http://{$_SERVER['SERVER_NAME']}$PWD$filename'> $filename </div>";
+            $file_openups .=  "<div class='navbaritem' link='$PWD$filename'> $filename </div>";
         }else{
             //if a directory
             $needsOpenup = true;

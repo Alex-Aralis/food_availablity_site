@@ -15,7 +15,6 @@ header{
 
 div.headercontent{
     padding:2px 2px 2px 2px; 
-    /*background:linear-gradient(140deg, black, dimgrey, black, slategrey, black); */
     background-color:black;
     display:flex; 
     justify-content:flex-start; 
@@ -42,38 +41,34 @@ div.navbar{
 
 div.navbaritem{
     position:relative; 
-    /*max-width:12em; */
-    margin:2px 7px 2px 7px;
+    max-width:15em; 
+    margin:0px 7px 0px 7px;
     text-align:center; 
     flex-grow:1; 
-    padding:2px 3px 2px 3px; 
-    border-radius:4px;
-    box-shadow: inset 0 0 2em 2em transparent;
-    transition:box-shadow 1s ease;
+    padding:4px 3px 4px 3px; 
+    border-radius:0px;
+    box-shadow: inset 0 0 0 0 transparent;
+    transition:box-shadow 300ms ease;
+    overflow:hidden;
+    overflow-wrap:break-word;
 }
 
 
 div.navbaritem[openupshutter]::after{content:" \25BE";}
 div.navbaritem:hover{
-    box-shadow: inset 0 0 2em 1em darkgoldenrod;
+    box-shadow: inset 0 0 5px 3px darkolivegreen;
+    background-color:orchid;
 }
 div.navbaritem[openupshutter]:hover::after{content:" \25BF";}
 
 div.selectednavbaritem{
-    background-color:chartreuse;
+    background-color:orchid;
 }
 div.navbaritem.selectednavbaritem::after{content:" \25B4";}
 div.navbaritem.selectednavbaritem:hover::after{content:" \25B5";}
 
-div.openupcontainer{
-    position:relative; 
-    overflow:hidden;
-    background-color:white; 
-    color:black;
-}
-
 div.openuplimiter{
-    background-color:white;
+    background-color:lightcyan;
     position:relative;
     overflow:auto;
     max-height:30em;
@@ -84,14 +79,14 @@ div.openuptopshadow{
     top:-6px; 
     right:0; left:0; 
     height:6px; 
-    box-shadow:0 3px 4px grey;
+    box-shadow:0 3px 6px black;
 }
 div.openupbottomshadow{
     position:absolute; 
     bottom:-6px; 
     right:0; left:0; 
     height:6px; 
-    box-shadow:0 -3px 4px grey;
+    box-shadow:0 -3px 6px black;
 }
 
 div.shadowbox{
@@ -101,41 +96,41 @@ div.shadowbox{
 
 div.openupshutter{
     color:black;
-    background-color:lightcyan;
     position:relative;
     overflow:hidden;
     max-height:0; 
     transition:max-height; 
     transition-duration:0.5s;
-    transition-timing-function:ease;
- /*   transition-delay:0.5s; */
+    transition-timing-function:ease-in-out;
 }
 
 div.openupcontent{
-    padding:6px 0 6px 0;
+    background-color:transparent;
+    padding:6px 0 2px 0;
 }
 
 div.openupgroup{
+    background-color:transparent;
+    font-size:0.93em;
 } 
 
 div.openupgrouppadding{
-    background-color:inherit;
+    background-color:transparent;
     position:relative;
+    overflow:hidden;
     height:0px;
     transition:height;
     transition-duration:0.5s;
+    transition-timing-function:ease-in;
 }
 
 div.openuppaddingshadow{
     position:absolute; 
-    top:0px; 
+    bottom:-6px; 
     right:0; left:0; 
     height:6px; 
-    box-shadow:0 -3px 4px grey;
+    box-shadow:0 -0px 6px black;
 }
-
-div.openupgroup:nth-child(even){background-color:mintcream}
-div.openupgroup:nth-child(odd){background-color:lightgoldenrodyellow}
 
 div.openuppaddingtransition{
     height:6px;
@@ -148,20 +143,29 @@ div.openuptransition{
 div.main{display:flex; flex-wrap:wrap;}
 div.leftsidebar{
     flex:1; 
-    min-width:200px; 
+    /*min-width:200px; */
     background-color:WhiteSmoke; 
     padding: 6px 6px 6px 6px
 }
 div.rightsidebar{
     flex:0.8; 
-    min-width:250px; 
+    /*min-width:250px; */
     padding:6px 6px 6px 6px;
 }
 
 div.center{
     flex:3; 
-    min-width:450px; 
+    /*min-width:450px; */
     padding: 6px 6px 6px 6px;
+}
+
+.ajax-container{
+    padding:5px 5px 5px 5px;
+    background-color:moccasin;
+    box-shadow:inset 0 0 14px 2px;
+    overflow-wrap:break-word;
+    transition:height;
+    transition-duration:1s;
 }
 
 @media screen and (max-width: 600px) {

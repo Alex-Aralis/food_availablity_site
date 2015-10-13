@@ -34,6 +34,8 @@
 </div>
 
 <div class="center">
+    <pre class="ajax-container"></pre>
+    
     Some info in the center so the webpage appears less barren and empty. <br>
     Some info in the center so the webpage appears less barren and empty. <br>
     Some info in the center so the webpage appears less barren and empty. <br>
@@ -103,6 +105,7 @@
     Some right side bar info. <br>
     Some right side bar info. <br>
     Some right side bar info. <br>
+</div>
 </div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
