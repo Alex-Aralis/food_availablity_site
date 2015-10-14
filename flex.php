@@ -34,8 +34,12 @@
 </div>
 
 <div class="center">
-    <pre class="ajax-container"></pre>
+    <div class="swapper-container">
+        <div class="swapper-current swapper-item"></div>
+        <div class="swapper-new swapper-item"></div>
+    </div>
     
+<!--    Some info in the center so the webpage appears less barren and empty. <br>
     Some info in the center so the webpage appears less barren and empty. <br>
     Some info in the center so the webpage appears less barren and empty. <br>
     Some info in the center so the webpage appears less barren and empty. <br>
@@ -67,7 +71,7 @@
     Some info in the center so the webpage appears less barren and empty. <br>
     Some info in the center so the webpage appears less barren and empty. <br>
     Some info in the center so the webpage appears less barren and empty. <br>
-    Some info in the center so the webpage appears less barren and empty. <br>
+ -->
 </div>
 
 <div class="rightsidebar">

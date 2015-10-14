@@ -159,14 +159,43 @@ div.center{
     padding: 6px 6px 6px 6px;
 }
 
-.ajax-container{
-    padding:5px 5px 5px 5px;
+div.swapper-container{
+    position:relative;
+    overflow:hidden;
     background-color:moccasin;
-    box-shadow:inset 0 0 14px 2px;
     overflow-wrap:break-word;
-    transition:height;
+    transition:max-height;
     transition-duration:1s;
 }
+div.swapper-container::after{
+    content:"";
+    display:block;
+    position:absolute;
+    top:0;bottom:0;left:0;right:0;
+    box-shadow:inset 0 0 14px 2px;
+}
+
+div.swapper-item{
+    padding:5px 5px 5px 5px;
+    width:100%;
+}
+
+div.swapper-current{
+    position:relative;
+}
+div.swapper-new{
+    display:none;
+}
+
+div.swapper-current-prep{
+    position:absolute;    
+    top:0;
+}
+div.swapper-new-prep{
+    display:block;
+    position:relative;
+    left:100%;
+} 
 
 @media screen and (max-width: 600px) {
     div.main{display:block;}

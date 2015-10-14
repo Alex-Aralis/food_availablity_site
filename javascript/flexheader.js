@@ -2,7 +2,39 @@ $(document).ready(function(){
 
     $("div.navbaritem[link]").click(function(){
         $.post($(this).attr("link"), {}, function(data, status){
-            $(".ajax-container").text(data);
+  
+            //inserting sent data into the new swapper-item
+            $("div.swapper-new").text(data);
+
+            //setting up animation initail state
+            $("div.swapper-current").addClass("swapper-current-prep");
+            $("div.swapper-new").addClass("swapper-new-prep");
+
+            //swapper-current animation
+            $("div.swapper-current-prep").animate({right:"100%"}, 1000, "swing", function (){
+                //resetting the old current windows content and style
+                $("div.swapper-current-prep").html("").css("right", "")
+
+                    //removing switch class swapper-current, swapper-new
+                    .removeClass("swapper-current").addClass("swapper-new")
+            
+                    //removing swapper-current-prep
+                    .removeClass("swapper-current-prep");
+
+            });
+        
+            //moves new-swapper into position, then 
+            $("div.swapper-new-prep").animate({left:"0"}, 1000, "swing", function (){
+                //swapping swapper-current and swapper-new classes
+                $("div.swapper-new-prep").removeClass("swapper-new").addClass("swapper-current")
+ 
+                    //reset left
+                    .css({left: ""})
+
+                    //removing prep-class
+                    .removeClass("swapper-new-prep");
+            });
+
         }, 'text');
 
         colapseOpenUps();
