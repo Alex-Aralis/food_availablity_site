@@ -1,0 +1,22 @@
+<form method="post" action="/php/create_new_user.php">
+    <input type="text" name="userName" placeholder="user name" required> <br>
+    <input type="password" pattern="^.{5,}$" placeholder="password" name="password" required> <br>
+    <input type="email" placeholder="email" name="email"> <br>
+
+    <input type="submit" value="Submit"><br>
+</form>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+
+<script>
+$(document).ready(function(){
+    $("form").submit(function (event){
+        $.post("/php/create_new_user.php", $(this).serializeArray(),
+            function(data){
+                console.log(data);
+            }, "text");
+        console.log($(this).serializeArray());
+        event.preventDefault();
+    });      
+});
+</script>

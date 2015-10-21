@@ -20,6 +20,8 @@ function dir_to_array($dir){
         }
     }
   
+    closedir($dir);
+
     return $filetree;
 }
 ?>

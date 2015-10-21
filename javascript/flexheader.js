@@ -1,11 +1,17 @@
 $(document).ready(function(){
 
     $("div.navbaritem[link]").click(function(){
-        $.post($(this).attr("link"), {}, function(data, status){
-  
-            //inserting sent data into the new swapper-item
-            $("div.swapper-new").text(data);
-
+        var path = $(this).attr("link");
+        $.post(path, {}, function(data, status){
+            console.log(path); 
+            //for html docs
+            if(/^.+\.html$/.test(path) || /^<!DOCTYPE html>/.test(data)){
+                $("div.swapper-new").html("<iframe src='" + window.location.origin + path + "'class='swapper-iframe'>Your browser doesn't support iframes. :( </iframe>");
+            }else{ //assuming to be a text doc
+                //inserting sent data into the new swapper-item
+                $("div.swapper-new").html("<pre class='text-data'></pre>");
+                $("pre.text-data").text(data);
+            }
             //setting up animation initail state
             $("div.swapper-current").addClass("swapper-current-prep");
             $("div.swapper-new").addClass("swapper-new-prep");
