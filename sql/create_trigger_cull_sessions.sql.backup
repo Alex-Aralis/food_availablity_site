@@ -1,0 +1,5 @@
+USE food_account_data;
+
+CREATE OR REPLACE TRIGGER cull_sessions BEFORE INSERT ON account_sessions
+FOR EACH ROW
+DELETE FROM account_sessions WHERE user_name=NEW.user_name AND ts>DATE_SUB(NOW(), INTERVAL 1 HOUR);

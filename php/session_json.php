@@ -41,10 +41,9 @@ $user_conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 //returns fetches as correct type if the mysql type exists in php
 $user_conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 
-$stmt = $user_conn->query("SELECT user_name, email FROM user_accounts_view LIMIT 1");
+$stmt = $user_conn->query("SELECT user_name, email FROM user_accounts_view");
 
 $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
 echo json_encode(array('username' => $result['user_name'], 'email' => $result['email']));
-
 ?>

@@ -17,10 +17,10 @@ $safe_pw = $conn->quote($_POST['password']);
 $safe_email = $conn->quote($_POST['email']);
 $safe_ip = $conn->quote($_SERVER['REMOTE_ADDR']);
 
-//check the number of accounts created in the last 2 hours by ip
+//check the number of accounts created in the last 1 MINUTE 1 by ip
 $stmt = $conn->query(
 "SELECT COUNT(*) AS recent_account_creations from account_creation_ips ".
-    "WHERE ip=$safe_ip AND timestamp>=DATE_SUB(NOW(), INTERVAL 2 HOUR) ".
+    "WHERE ip=$safe_ip AND timestamp>=DATE_SUB(NOW(), INTERVAL 1 MINUTE) ".
     "GROUP BY ip"
 );
 

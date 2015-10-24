@@ -1,0 +1,3 @@
+CREATE OR REPLACE TRIGGER mysql.remove_food_account AFTER DELETE ON mysql.user
+FOR EACH ROW 
+DELETE FROM food_account_data.accounts WHERE user_name=OLD.User;

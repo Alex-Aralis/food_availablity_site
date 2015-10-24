@@ -1,4 +1,4 @@
-USE mysql;
+USE mysql
 
 DELETE FROM user WHERE User!='root' AND User!='food_user';
 DELETE FROM roles_mapping WHERE User!='root';

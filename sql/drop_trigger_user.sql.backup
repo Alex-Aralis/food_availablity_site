@@ -1,0 +1,1 @@
+DROP TRIGGER food_account_data.remove_user;

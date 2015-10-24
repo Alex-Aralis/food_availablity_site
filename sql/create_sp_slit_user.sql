@@ -1,0 +1,12 @@
+DELIMITER //
+
+CREATE OR REPLACE PROCEDURE food_account_data.split_user(OUT user_name VARCHAR(80), OUT host VARCHAR(60))
+NO SQL
+BEGIN
+SET host = REGEXP_SUBSTR(SESSION_USER(), '[^@]+$');
+SET user_name = SUBSTR(SESSION_USER(), 1, REGEXP_INSTR(SESSION_USER(), '[^@]+$')-2);
+
+END//
+
+DELIMITER ;
+

@@ -1,0 +1,12 @@
+USE food_account_data;
+
+CREATE OR REPLACE TABLE connections (
+conn_id INT NOT NULL PRIMARY KEY, 
+user_name VARCHAR(80) NOT NULL,
+host VARCHAR(60) NOT NULL,
+active BOOLEAN NOT NULL DEFAULT TRUE,
+ts TIMESTAMP,
+FOREIGN KEY (user_name) REFERENCES accounts(user_name)
+    ON UPDATE CASCADE
+    ON DELETE CASCADE
+);
