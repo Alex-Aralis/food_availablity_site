@@ -2,9 +2,33 @@
 require_once "/srv/http/food-availability-site/php/food_openssl.php";
 $error_file = "/srv/http/food-availability-site/logs/php.log";
 
+$root_conn = new PDO("mysql:host=localhost;dbname=food_account_data", "root", "skunkskunk2");
 
-$conn = new PDO("mysql:host=localhost;dbname=food_account_data", $_POST['userName'], $_POST['password']);
+//setting up the exeption handling
+$root_conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    
+//returns fetches as correct type if the mysql type exists in php
+$root_conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 
+$safe_user_name = $root_conn->quote($_POST['userName']);
+$root_conn->exec("DELETE FROM food_account_data.account_login_failures WHERE " .
+                  "user_name=$safe_user_name AND ts<DATE_SUB(NOW(), INTERVAL 1 HOUR)");
+
+$stmt = $root_conn->query("SELECT COUNT(*) as recent_failures FROM food_account_data.account_login_failures " .
+                    "WHERE user_name=$safe_user_name");
+
+$result = $stmt->fetchColumn();
+
+if($result > 5){
+    die("TOO MANY FAILED LOGIN ATTEMPTS FOR USER!!!");
+}
+
+try{
+    $conn = new PDO("mysql:host=localhost;dbname=food_account_data", $_POST['userName'], $_POST['password']);
+}catch(PDOException $e){
+    $root_conn->exec("INSERT INTO food_account_data.account_login_failures SET user_name=$safe_user_name");
+    die("FAILED LOGIN");
+}
 //setting up the exeption handling
 $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
@@ -22,14 +46,6 @@ $iv = openssl_random_pseudo_bytes(IV_BYTES, $strong);
 if(!$strong){
     echo "openssl random initialization vector generation not cryptographically strong!!!";
 }
-
-$root_conn = new PDO("mysql:host=localhost;dbname=food_account_data", "root", "skunkskunk2");
-
-//setting up the exeption handling
-$root_conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    
-//returns fetches as correct type if the mysql type exists in php
-$root_conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 
 //$stmt = $root_conn->prepare("INSERT INTO account_sessions SET user_name=:userName, pw_enc_key=:enc_key, iv=:iv");
 $stmt = $root_conn->prepare("CALL add_session(:userName, :enc_key, :iv, 5, 1)");

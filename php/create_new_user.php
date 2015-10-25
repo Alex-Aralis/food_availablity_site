@@ -17,7 +17,19 @@ $safe_pw = $conn->quote($_POST['password']);
 $safe_email = $conn->quote($_POST['email']);
 $safe_ip = $conn->quote($_SERVER['REMOTE_ADDR']);
 
-//check the number of accounts created in the last 1 MINUTE 1 by ip
+//$recent_accounts = 0;
+//check the number of accounts created in the last 1 HOUR by ip
+$stmt = $conn->prepare("CALL food_account_data.get_recent_account_creations(:remote_addr, 1, @recent_accounts)");
+$stmt->bindParam(':remote_addr', $_SERVER['REMOTE_ADDR']);
+//$stmt->bindParam(':recent_accounts', $recent_accounts, PDO::PARAM_INT, 50);
+
+$stmt->execute();
+//$stmt->closeCursor();
+
+$stmt = $conn->query('select @recent_accounts');
+$result = $stmt->fetchAll(PDO::FETCH_NUM);
+
+/*
 $stmt = $conn->query(
 "SELECT COUNT(*) AS recent_account_creations from account_creation_ips ".
     "WHERE ip=$safe_ip AND timestamp>=DATE_SUB(NOW(), INTERVAL 1 MINUTE) ".
@@ -26,9 +38,10 @@ $stmt = $conn->query(
 
 $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 print_r($result);
+*/
 
-//dont allow more than 10 accounts in 2 hours
-if ($result[0]['recent_account_creations'] >= 10){
+//dont allow more than 10 accounts in 1 hour
+if ($result[0][0] >= 10){
    die("Too many accounts created from ip, try again later");
 }
 
