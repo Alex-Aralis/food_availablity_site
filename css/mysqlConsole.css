@@ -1,0 +1,73 @@
+#mysqlConsole {
+    border-style:solid;
+    overflow:auto;
+    height:400px;
+    font-family:monospace;
+}
+
+#mysqlConsole input {
+    width:100%;
+    font-family:monospace;
+    align-self:stretch;
+    font-size:inherit;
+    border:none;
+    padding:0 0 0 0;
+    margin:0 0 0 0;
+    background-color:transparent;
+}
+
+#mysqlConsole input:focus {
+    outline:none;
+}
+
+div.mysql-console-line {
+    display:flex;
+    overflow:hidden;
+    align-items:center;
+    height:auto;
+    width:100%;
+    padding:2px 0 2px 0;
+}
+
+div.mysql-console-line.result{
+    word-break:break-word;
+}
+
+div.mysql-console-line.request {
+    counter-increment: index;
+}
+
+div.mysql-console-line:nth-child(2n){
+    background-color:mintcream;
+}
+
+div.mysql-console-line:nth-child(2n+1){
+    background-color:linen;
+}
+
+div.pending{
+    word-break:break-word;
+}
+div.prompt {
+    color:    
+}
+
+div.prompt:before {
+    content:'['counter(index)'\00A0';
+}
+
+div.prompt:after {
+    content:"]$\00A0";
+}
+
+input.mysql-console-history {
+    
+}
+
+input.mysql-console-history:read-only {
+    color:grey;
+}
+
+input.mysql-console-input {
+     
+}
