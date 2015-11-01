@@ -16,6 +16,11 @@
     background-color:transparent;
 }
 
+#mysqlConsole pre{
+    margin:0 0 0 0;
+    padding:0 0 0 0;
+}
+
 #mysqlConsole input:focus {
     outline:none;
 }
@@ -48,8 +53,8 @@ div.mysql-console-line:nth-child(2n+1){
 div.pending{
     word-break:break-word;
 }
+
 div.prompt {
-    color:    
 }
 
 div.prompt:before {
@@ -64,7 +69,7 @@ input.mysql-console-history {
     
 }
 
-input.mysql-console-history:read-only {
+#mysqlConsole input:read-only {
     color:grey;
 }
 
