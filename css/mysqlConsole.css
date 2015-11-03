@@ -73,6 +73,6 @@ input.mysql-console-history {
     color:grey;
 }
 
-input.mysql-console-input {
-     
+div.mysql-console-line.error {
+    color:red;
 }

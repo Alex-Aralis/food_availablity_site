@@ -25,13 +25,16 @@ $db_pw_key = $result['pw_enc_key'];
 
 $iv = $result['iv'];
 
-$pw = pkcs7_unpad(openssl_decrypt(
+$pw = openssl_decrypt(
     base64_decode($_COOKIE['enc_pw']),
     CYPHER_AND_MODE,
     $db_pw_key,
-    0,
+    OPENSSL_RAW_DATA,
     $iv
-));
+);
+
+error_log('pw type: ' . gettype($pw));
+error_log("pw: $pw");
 
 $user_conn = new PDO("mysql:host=localhost;dbname=food_account_data", $user_name, $pw);
 

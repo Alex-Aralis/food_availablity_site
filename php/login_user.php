@@ -65,14 +65,18 @@ $result = $stmt->fetch(PDO::FETCH_ASSOC);
 $session_id = $result['id'];
 
 $enc_pw = openssl_encrypt(
-    pkcs7_pad($_POST['password'], 16),
+//    pkcs7_pad($_POST['password'], 16),
+    $_POST['password'],
     CYPHER_AND_MODE,
     $enc_key,
     0,
     $iv
 );
 
+$enc_pw_dec = bin2hex(base64_decode($enc_pw));
+error_log("$enc_pw_dec " . gettype($enc_pw_dec) . ' ' . strlen($enc_pw_dec));
+
 //sets a cookie for 1 day
-setrawcookie("enc_pw", base64_encode($enc_pw), time() + 86400, "/");
+setrawcookie("enc_pw", $enc_pw, time() + 86400, "/");
 setrawcookie("session_id", $session_id, time() + 86400, "/");
 ?>

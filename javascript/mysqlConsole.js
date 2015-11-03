@@ -39,12 +39,20 @@ function startWaiting(){
     }, 100);
 }
 
-function insertResponse(res){
-    $('div.pending').html('<pre></pre>');
+function stopWaiting(dotTimer){
+   clearInterval(dotTimer);
+   $("div.pending").remove();
+}
 
-    $('div.pending pre').text(res);
+function insertResponse(res, error){
+    error = typeof error !== 'undefined' ? error : false;
 
-    $('div.pending').removeClass('pending');
+    $('#mysqlConsole').append('<div class="mysql-console-line ' + (error ? 'error' : 'result') + ' inserting">'+
+      res + '</div>');
+
+    //$('#mysqlConsole div.inserting pre').text(res);
+ 
+    $('#mysqlConsole div.inserting').removeClass("inserting");
 }
 
 function displayResults (sqlArray, i){
@@ -54,13 +62,13 @@ function displayResults (sqlArray, i){
         globalSession.call('com.mysql.console.query.' + thisSessionName, 
           [sqlArray[i]]).then(function(res){
               console.log(i + 'displaying: ' + res);
-              clearInterval(timer);
+              stopWaiting(timer);
               insertResponse(res); 
               displayResults(sqlArray, i + 1);
           },function(err){
               console.log(err);
-              clearInterval(timer);
-              insertResponse('Session has timedout'); 
+              stopWaiting(timer);
+              insertResponse('Session has timedout', true); 
           });
     }else{
         mysqlConsoleNewline();
@@ -79,7 +87,7 @@ function enterAction (event){
             clearTimeout(watchdogTimer);
             globalSession.call('com.mysql.console.closeSession', 
               [thisSessionName]).then(function(res){
-                clearInterval(timer);
+                stopWaiting(timer);
                 insertResponse(res);
             });
             return;
@@ -116,10 +124,23 @@ conn.onopen = function (session) {
 
 
     console.log('creating session');
-    session.call('com.mysql.console.requestSession').then(function (sessionName) {
+    var tmpTimer = startWaiting(); 
+
+    //console.log('requesting session with login,\n id: ' + $.cookie('session_id') + " enc_pw: " + $.cookie('enc_pw'));
+    var accountSessionName = $.cookie('session_id');
+    var accountSessionEncPW = $.cookie('enc_pw'); 
+    console.log('creating session');
+    session.call('com.mysql.console.requestSession', [accountSessionName, accountSessionEncPW])
+      .then(function (sessionName) {
+        stopWaiting(tmpTimer);
         session.call('com.mysql.console.giveBone', [sessionName]).then(function (timeoutLength){
             console.log('initial timeoutLength = ' + timeoutLength);
             foodChain('com.mysql.console.giveBone', [sessionName], timeoutLength);
+        }, function (err){
+            console.log(err);
+            stopWaiting(tmpTimer);
+            lockInput();
+            insertResponse('no server', true);
         });
 
         
@@ -129,6 +150,11 @@ conn.onopen = function (session) {
              
             session.call(rpc, args).then(function (newTimeout){
                 watchdogTimer = setTimeout(foodChain, timeoutLength*500, rpc, args, newTimeout);
+            },function (err) {
+                console.log(err);
+                stopWaiting(tmpTimer);
+                lockInput();
+                insertResponse('session is gone', true);
             });
         }
         
@@ -137,6 +163,11 @@ conn.onopen = function (session) {
         $('input.mysql-console-input').keydown(enterAction);
         console.log('keydown event handler bound');
             
+    }, function (err) {
+        console.log(err);
+        lockInput();
+        stopWaiting(tmpTimer);
+        insertResponse("session refuesed", true);
     });
 
     console.log('wamp event registration complete');
