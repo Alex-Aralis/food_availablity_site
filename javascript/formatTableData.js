@@ -16,7 +16,7 @@ self.onmessage = function formatTableData(msg){
     var rows = msg.data.rows;
   
     var columnWidths = [];
-
+    
     columnNames.forEach(function (name, i){
         columnWidths[i] = name.length;
         rows.forEach(function (row, j){
