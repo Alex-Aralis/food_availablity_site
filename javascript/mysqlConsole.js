@@ -44,11 +44,73 @@ function stopWaiting(dotTimer){
    $("div.pending").remove();
 }
 
-function insertResponse(res, error){
-    error = typeof error !== 'undefined' ? error : false;
+function padValue(val, columnWidth){
+    vals = String(val);
+    
 
-    $('#mysqlConsole').append('<div class="mysql-console-line ' + (error ? 'error' : 'result') + ' inserting">'+
-      res + '</div>');
+    while(vals.length < columnWidth){
+        vals += ' ';
+    }
+    
+    return vals;
+}
+
+function formatTableData(columnNames, rows){
+    var res = '| '
+  
+    var columnWidths = [];
+
+    columnNames.forEach(function (name, i){
+        columnWidths[i] = name.length;
+        rows.forEach(function (row, j){
+            vals = String(row[i]);
+
+            if(vals.length > columnWidths[i]){
+                columnWidths[i] = vals.length;
+            }
+        });
+    });
+
+    console.log(columnWidths);
+
+    columnNames.forEach(function (name, index){
+
+        res += padValue(name, columnWidths[index]) + ' | ';
+    });
+    
+    sep = '';
+    while(sep.length < res.length - 1){
+        sep += '-';
+    }
+
+    res += "\n" + sep;
+
+    rows.forEach(function(row, index){
+        res += "\n| ";
+        row.forEach(function(val, index){
+            res += padValue(val, columnWidths[index]) + ' | ';
+        });
+    });
+    
+    return res;
+}
+
+function insertResponse(res){
+    if (res.error !== undefined){
+        console.log('inserting error');
+        $('#mysqlConsole').append('<div class="mysql-console-line error ' + 
+          'inserting">' + res.error + '</div>');
+    }else if (res.columnNames !== undefined && res.rows !== undefined){
+        console.log('inserting normal result');
+        $('#mysqlConsole').append('<div class="mysql-console-line result' + 
+          ' inserting"><pre></pre></div>');
+        $('#mysqlConsole div.mysql-console-line.inserting pre').
+            text(formatTableData(res.columnNames, res.rows));
+    }else{
+        console.log('result in unknown format!!!');
+        $('#mysqlConsole').append('<div class="mysql-console-line result' + 
+          'inserting">' + res + '</div>');
+    }
 
     //$('#mysqlConsole div.inserting pre').text(res);
  
@@ -59,16 +121,15 @@ function displayResults (sqlArray, i){
     if(sqlArray.length > i){
         console.log(i + 'requesting: ' + sqlArray[i]);
         var timer = startWaiting();
-        globalSession.call('com.mysql.console.query.' + thisSessionName, 
-          [sqlArray[i]]).then(function(res){
-              console.log(i + 'displaying: ' + res);
+        globalSession.call('com.mysql.console.query', 
+          [thisSessionName, sqlArray[i]]).then(function(res){
               stopWaiting(timer);
-              insertResponse(res); 
+              insertResponse(JSON.parse(res)); 
               displayResults(sqlArray, i + 1);
           },function(err){
               console.log(err);
               stopWaiting(timer);
-              insertResponse('Session has timedout', true); 
+              insertResponse({error:'Could not perform query, check console for more info.'}); 
           });
     }else{
         mysqlConsoleNewline();
@@ -140,7 +201,7 @@ conn.onopen = function (session) {
             console.log(err);
             stopWaiting(tmpTimer);
             lockInput();
-            insertResponse('no server', true);
+            insertResponse({error:'Could not lease session.  Expect to be timed out.'});
         });
 
         
@@ -154,7 +215,7 @@ conn.onopen = function (session) {
                 console.log(err);
                 stopWaiting(tmpTimer);
                 lockInput();
-                insertResponse('session is gone', true);
+                insertResponse({error:'session is gone'});
             });
         }
         
@@ -167,7 +228,7 @@ conn.onopen = function (session) {
         console.log(err);
         lockInput();
         stopWaiting(tmpTimer);
-        insertResponse("session refuesed", true);
+        insertResponse({error:"session request rejected.  For more info check the console."});
     });
 
     console.log('wamp event registration complete');
