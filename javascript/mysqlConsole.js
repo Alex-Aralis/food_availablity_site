@@ -44,72 +44,32 @@ function stopWaiting(dotTimer){
    $("div.pending").remove();
 }
 
-function padValue(val, columnWidth){
-    vals = String(val);
-    
-
-    while(vals.length < columnWidth){
-        vals += ' ';
-    }
-    
-    return vals;
-}
-
-function formatTableData(columnNames, rows){
-    var res = '| '
-  
-    var columnWidths = [];
-
-    columnNames.forEach(function (name, i){
-        columnWidths[i] = name.length;
-        rows.forEach(function (row, j){
-            vals = String(row[i]);
-
-            if(vals.length > columnWidths[i]){
-                columnWidths[i] = vals.length;
-            }
-        });
-    });
-
-    console.log(columnWidths);
-
-    columnNames.forEach(function (name, index){
-
-        res += padValue(name, columnWidths[index]) + ' | ';
-    });
-    
-    sep = '';
-    while(sep.length < res.length - 1){
-        sep += '-';
-    }
-
-    res += "\n" + sep;
-
-    rows.forEach(function(row, index){
-        res += "\n| ";
-        row.forEach(function(val, index){
-            res += padValue(val, columnWidths[index]) + ' | ';
-        });
-    });
-    
-    return res;
-}
-
-function insertResponse(res){
+function insertResponse(res, then){
     if (res.error !== undefined){
         console.log('inserting error');
         $('#mysqlConsole').append('<div class="mysql-console-line error ' + 
           'inserting">' + res.error + '</div>');
+        then();
     }else if (res.columnNames !== undefined && res.rows !== undefined){
-        console.log('inserting normal result');
-        $('#mysqlConsole').append('<div class="mysql-console-line result' + 
-          ' inserting"><pre></pre></div>');
-        $('#mysqlConsole div.mysql-console-line.inserting pre').
-            text(formatTableData(res.columnNames, res.rows));
+        console.log('normal result recieved');
+        var worker = new Worker('/javascript/formatTableData.js'); 
+         
+        worker.addEventListener('message', function(event){
+            console.log('inserting normal result');
+            $('#mysqlConsole').append('<div class="mysql-console-line result' + 
+              ' inserting"><pre></pre></div>');
+            $('#mysqlConsole div.mysql-console-line.inserting pre').
+                text(event.data);
+            then();
+        }, false);
+         
+        console.log('spinning off worker to fromat result');
+        worker.postMessage(res);
     }else{
         console.log('result in unknown format!!!');
         $('#mysqlConsole').append('<div class="mysql-console-line result' + 
           'inserting">' + res + '</div>');
+        then();
     }
 
     //$('#mysqlConsole div.inserting pre').text(res);
@@ -124,8 +84,9 @@ function displayResults (sqlArray, i){
         globalSession.call('com.mysql.console.query', 
           [thisSessionName, sqlArray[i]]).then(function(res){
               stopWaiting(timer);
-              insertResponse(JSON.parse(res)); 
-              displayResults(sqlArray, i + 1);
+              insertResponse(JSON.parse(res), function(){
+                  displayResults(sqlArray, i + 1);
+              }); 
           },function(err){
               console.log(err);
               stopWaiting(timer);
