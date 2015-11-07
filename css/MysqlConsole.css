@@ -1,11 +1,13 @@
-#mysqlConsole {
+div.MysqlConsole {
     border-style:solid;
     overflow:auto;
-    height:400px;
+    height:100%;
+    width:100%;
+    margin:5px;
     font-family:monospace;
 }
 
-#mysqlConsole input {
+div.MysqlConsole input {
     width:100%;
     font-family:monospace;
     align-self:stretch;
@@ -16,16 +18,18 @@
     background-color:transparent;
 }
 
-#mysqlConsole pre{
+div.MysqlConsole pre{
     margin:0 0 0 0;
     padding:0 0 0 0;
+    overflow: auto;
+    overflow-wrap: break-word;
 }
 
-#mysqlConsole input:focus {
+div.MysqlConsole input:focus {
     outline:none;
 }
 
-div.mysql-console-line {
+div.MysqlConsole div.mysql-console-line {
     display:flex;
     overflow:hidden;
     align-items:center;
@@ -34,45 +38,45 @@ div.mysql-console-line {
     padding:2px 0 2px 0;
 }
 
-div.mysql-console-line.result{
+div.MysqlConsole div.mysql-console-line.result{
     word-break:break-word;
 }
 
-div.mysql-console-line.request {
+div.MysqlConsole div.mysql-console-line.request {
     counter-increment: index;
 }
 
-div.mysql-console-line:nth-child(2n){
+div.MysqlConsole div.mysql-console-line:nth-child(2n){
     background-color:mintcream;
 }
 
-div.mysql-console-line:nth-child(2n+1){
+div.MysqlConsole div.mysql-console-line:nth-child(2n+1){
     background-color:linen;
 }
 
-div.pending{
+div.MysqlConsole div.pending{
     word-break:break-word;
 }
 
-div.prompt {
+div.MysqlConsole div.prompt {
 }
 
-div.prompt:before {
+div.MysqlConsole div.prompt:before {
     content:'['counter(index)'\00A0';
 }
 
-div.prompt:after {
+div.MysqlConsole div.prompt:after {
     content:"]$\00A0";
 }
 
-input.mysql-console-history {
+div.MysqlConsole input.mysql-console-history {
     
 }
 
-#mysqlConsole input:read-only {
+div.MysqlConsole input:read-only {
     color:grey;
 }
 
-div.mysql-console-line.error {
+div.MysqlConsole div.mysql-console-line.error {
     color:red;
 }
