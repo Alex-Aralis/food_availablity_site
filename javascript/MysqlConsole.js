@@ -9,6 +9,8 @@ var MysqlConsole = function (ElementID, WampURL, WampRealm){
     this.rootElement = $('#'+ElementID);
     this.ElementID = ElementID;
     this.strblob = '';
+    this.commandHistory = [''];
+    this.commandHistoryIndex = 0;
 
     this.$().addClass('MysqlConsole');
 };
@@ -140,7 +142,6 @@ p.displayResults = function (sqlArray, i){
 }
 
 p.enterAction = function (event){
-
     //on enter
     if(event.keyCode === 13){
         var timer = null; 
@@ -157,9 +158,14 @@ p.enterAction = function (event){
             }.bind(this));
             return;
         }
-        this.strblob += this.$("input.mysql-console-input").val();
+        var command = this.$("input.mysql-console-input").val();
+
+        this.commandHistory[this.commandHistory.length - 1] = command;
+        this.commandHistory.push('');
+        this.commandHistoryIndex = this.commandHistory.length - 1;
+
+        this.strblob += command;
             
-          
         console.log('mysqlConsole enter occured: ' + this.strblob);
         var pos = this.strblob.search(/[^;]*$/);
         if(pos != 0){
@@ -176,6 +182,30 @@ p.enterAction = function (event){
             console.log('line blobbed: ' + pos + ' ' + this.strblob);
             this.strblob += ' ';
             this.newPrompt();
+        }
+    }
+    //if up arrow
+    else if(event.keyCode === 38){
+        this.commandHistoryIndex -= 1;
+        if(this.commandHistoryIndex >= 0){
+            this.commandHistory[this.commandHistoryIndex + 1] = 
+              this.$("input.mysql-console-input").val();
+
+            this.$("input.mysql-console-input").val(this.commandHistory[this.commandHistoryIndex]);
+        }else{
+            this.commandHistoryIndex = 0;
+        }
+    }
+    //if down arrow
+    else if(event.keyCode === 40){
+        this.commandHistoryIndex += 1;
+ 
+        if(this.commandHistoryIndex < this.commandHistory.length){
+            this.commandHistory[this.commandHistoryIndex - 1] = 
+              this.$("input.mysql-console-input").val();
+            this.$("input.mysql-console-input").val(this.commandHistory[this.commandHistoryIndex]);
+        }else{
+            this.commandHistoryIndex = this.commandHistory.length - 1;
         }
     }
 }
@@ -220,7 +250,8 @@ p.onopen = function (session) {
             }
  
             session.call(rpc, args).then(function (newTimeout){
-                this.watchdogTimer = setTimeout(foodChain.bind(this), timeoutLength*500, rpc, args, newTimeout);
+                this.watchdogTimer = setTimeout(foodChain.bind(this), 
+                 timeoutLength*500, rpc, args, newTimeout);
             }.bind(this),function (err) {
                 console.log(err);
                 this.stopWaiting(tmpTimer);
@@ -253,3 +284,4 @@ $(document).ready(function(){
     mysqlConsole.open();
 });
 */
+ 

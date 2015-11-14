@@ -17,8 +17,8 @@ var wampURL = 'ws://localhost:8081/ws';
 var wampRealm = 'realm1';
 
 $(function(){
-    var console1 = new MysqlConsole('console1', wampURL, wampRealm);
-    var console2 = new MysqlConsole('console2', wampURL, wampRealm);
+    console1 = new MysqlConsole('console1', wampURL, wampRealm);
+    console2 = new MysqlConsole('console2', wampURL, wampRealm);
 
     console1.open();
     console2.open();
