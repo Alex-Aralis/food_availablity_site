@@ -1,241 +1,184 @@
+console.log('event registartion begun');
 
-var MysqlConsole = function (ElementID, WampURL, WampRealm){
-    console.log('Creating new MysqlConsole object: ' + ElementID);
-    autobahn.Connection.call(this, {
-            url: WampURL,
-            realm: WampRealm
+var conn = new autobahn.Connection({
+        url: 'ws://localhost:8081/ws',
+        realm: 'realm1'
     });
-  
-    this.rootElement = $('#'+ElementID);
-    this.ElementID = ElementID;
-    this.strblob = '';
-    this.commandHistory = [''];
-    this.commandHistoryIndex = 0;
 
-    this.$().addClass('MysqlConsole');
-};
+var thisSessionName = -1;
+var strblob = '';
+var globalSession = null;
+var hunger = null;
+var watchdogTimer = null;
 
-MysqlConsole.prototype = Object.create(autobahn.Connection.prototype);
-MysqlConsole.prototype.constructor = MysqlConsole;
-
-var p = MysqlConsole.prototype;
-
-p.$ = function(selector){
-    if (selector === undefined) {
-        return this.rootElement;
-    }
-
-    return $(selector, this.rootElement)
-};
-
-p.lockInput = function(){
+function lockInput(){
     console.log('locking input');
-    this.$("input.mysql-console-input").attr('readonly','');
-    this.$('input.mysql-console-input').off('keydown');
+    $("input.mysql-console-input").attr('readonly','');
+
 }
 
-p.newPrompt = function (){
-    this.$("input.mysql-console-input").addClass("mysql-console-history")
+function mysqlConsoleNewline(){
+    $("input.mysql-console-input").addClass("mysql-console-history")
       .removeClass("mysql-console-input");
 
-    this.$().append('<div class="mysql-console-line request">' +
+    $("#mysqlConsole").append('<div class="mysql-console-line request">' +
         '<div class="prompt">prompt</div>' +
         '<input class="mysql-console-input request"></input></div>');
 
-    this.$("input.mysql-console-input").keydown(this.enterAction.bind(this)).focus();
+    $("input.mysql-console-input").keydown(enterAction).focus();
 }
 
-p.startWaiting = function (){
+function startWaiting(){
     var dots = '.';
 
-    this.$().append("<div class='mysql-console-line pending'>.</div>");
+    $("#mysqlConsole").append("<div class='mysql-console-line pending'>.</div>");
 
     return setInterval(function(){
-        this.$("div.pending").text(dots);
+        $("div.pending").text(dots);
         dots += '.';
     }, 100);
 }
 
-p.stopWaiting = function (dotTimer){
+function stopWaiting(dotTimer){
    clearInterval(dotTimer);
-   this.$("div.pending").remove();
+   $("div.pending").remove();
 }
 
-p.insertLine = function (text, classes, pre){
+function insertLine(text, classes, pre){
     classes = classes === undefined ? [] : classes;
     pre = pre === undefined ? false : pre;
 
     if(pre){
-        console.time('result insert');
-        this.$().append('<div class="mysql-console-line inserting ' + 
-          classes.join(' ') + '"><pre></pre></div>');
-        //this.$('div.inserting pre').get(0).appendChild(document.createTextNode(text));
-        //this.$('div.inserting pre').show();
-        this.$('div.inserting pre').text(text);
-        console.timeEnd('result insert');
+        $('#mysqlConsole').append('<div class="mysql-console-line inserting ' + 
+          classes.join(' ') + '"><pre>' + text + '</pre></div>');
     }else{
-        this.$().append('<div class="mysql-console-line inserting ' + 
-          classes.join(' ') + '"></div>');
-        this.$('div.inserting').text(text);
+        $('#mysqlConsole').append('<div class="mysql-console-line inserting ' + 
+          classes.join(' ') + '">' + text + '</div>');
     }
 
-    this.$('div.inserting').removeClass("inserting");
+    $('#mysqlConsole div.inserting').removeClass("inserting");
 }
 
-p.insertResponse = function (res, then){
+function insertResponse(res, then){
     then = then === undefined ? function(){} : then;
 
     if (res.error !== undefined){
         console.log('inserting error');
-        this.insertLine(res.error, ['error']);
+        insertLine(res.error, ['error']);
         then();
     }else if (res.columnNames !== undefined && res.rows !== undefined){
         console.log('normal result recieved');
         var worker = new Worker('/javascript/formatTableData.js'); 
- 
+         
         worker.onmessage = function(event){
             console.log('inserting normal result');
-            this.insertLine(event.data, ['result'], true);
+            insertLine(event.data, ['result'], true);
             then();
-        }.bind(this)
+        }
     
         worker.onerror = function(event){
             console.log('worker failed to format table data!!!');
-            this.insertLine('Query result could not be formated!!!', ['error']);
+            insertLine('Query result could not be formated!!!', ['error']);
             then();
-        }.bind(this)
+        } 
 
         console.log('spinning off worker to fromat result');
         worker.postMessage(res);
-/*
-        res.rows.forEach(function (row){
-            this.insertLine(row.join(), ['result'], false);
-        }.bind(this));
-        then();
-*/
     }else{
         console.log('result in unknown format!!!');
-        this.insertLine(res, ['result']);
+        insertLine(res, ['result']);
         then();
     }
  
 }
 
-p.displayResults = function (sqlArray, i){
+function displayResults (sqlArray, i){
     if(sqlArray.length > i){
         console.log(i + 'requesting: ' + sqlArray[i]);
-        var timer = this.startWaiting();
-        this.sqlSession.call('com.mysql.console.query', 
-          [this.sqlSessionName, sqlArray[i]]).then(function(res){
-              this.stopWaiting(timer);
-              this.insertResponse(JSON.parse(res), function(){
-                  this.displayResults(sqlArray, i + 1);
-              }.bind(this)); 
-          }.bind(this),function(err){
+        var timer = startWaiting();
+        globalSession.call('com.mysql.console.query', 
+          [thisSessionName, sqlArray[i]]).then(function(res){
+              stopWaiting(timer);
+              insertResponse(JSON.parse(res), function(){
+                  displayResults(sqlArray, i + 1);
+              }); 
+          },function(err){
               console.log(err);
-              this.stopWaiting(timer);
-              this.insertResponse({error:'Could not perform query, check console for more info.'}); 
-          }.bind(this));
+              stopWaiting(timer);
+              insertResponse({error:'Could not perform query, check console for more info.'}); 
+          });
     }else{
-        this.newPrompt();
+        mysqlConsoleNewline();
     }
 }
 
-p.enterAction = function (event){
+function enterAction (event){
     //on enter
     if(event.keyCode === 13){
         var timer = null; 
-        //$(event.target).off(event)
-        this.lockInput();
+        $(this).off(event)
+        lockInput();
 
-        if (this.$("input.mysql-console-input").val() === "exit"){
-            timer = this.startWaiting();
-            clearTimeout(this.watchdogTimer);
-            this.sqlSession.call('com.mysql.console.closeSession', 
-              [this.sqlSessionName, false]).then(function(res){
-                this.stopWaiting(timer);
-                this.insertResponse(res);
-            }.bind(this));
+        if ($("input.mysql-console-input").val() === "exit"){
+            timer = startWaiting();
+            clearTimeout(watchdogTimer);
+            globalSession.call('com.mysql.console.closeSession', 
+              [thisSessionName]).then(function(res){
+                stopWaiting(timer);
+                insertResponse(res);
+            });
             return;
         }
-        var command = this.$("input.mysql-console-input").val();
-
-        this.commandHistory[this.commandHistory.length - 1] = command;
-        this.commandHistory.push('');
-        this.commandHistoryIndex = this.commandHistory.length - 1;
-
-        this.strblob += command;
+        strblob += $("input.mysql-console-input").val();
             
-        console.log('mysqlConsole enter occured: ' + this.strblob);
-        var pos = this.strblob.search(/[^;]*$/);
+          
+        console.log('mysqlConsole enter occured: ' + strblob);
+        var pos = strblob.search(/[^;]*$/);
         if(pos != 0){
             console.log(pos);
-            sqlStmts = this.strblob.slice(0,pos);
-            this.strblob = this.strblob.slice(pos, -1);
+            sqlStmts = strblob.slice(0,pos);
+            strblob = strblob.slice(pos, -1);
           
-            console.log('session name: ' +  this.sqlSessionName);
+            console.log(sqlStmts);
+            console.log('session name: ' +  thisSessionName);
 
             sqlArray = sqlStmts.split(';');
             sqlArray.pop();
-            this.displayResults(sqlArray, 0);
+            console.log(sqlArray); 
+            displayResults(sqlArray, 0);
         }else{
-            console.log('line blobbed: ' + pos + ' ' + this.strblob);
-            this.strblob += ' ';
-            this.newPrompt();
-        }
-    }
-    //if up arrow
-    else if(event.keyCode === 38){
-        this.commandHistoryIndex -= 1;
-        if(this.commandHistoryIndex >= 0){
-            this.commandHistory[this.commandHistoryIndex + 1] = 
-              this.$("input.mysql-console-input").val();
-
-            this.$("input.mysql-console-input").val(this.commandHistory[this.commandHistoryIndex]);
-        }else{
-            this.commandHistoryIndex = 0;
-        }
-    }
-    //if down arrow
-    else if(event.keyCode === 40){
-        this.commandHistoryIndex += 1;
- 
-        if(this.commandHistoryIndex < this.commandHistory.length){
-            this.commandHistory[this.commandHistoryIndex - 1] = 
-              this.$("input.mysql-console-input").val();
-            this.$("input.mysql-console-input").val(this.commandHistory[this.commandHistoryIndex]);
-        }else{
-            this.commandHistoryIndex = this.commandHistory.length - 1;
+            console.log(pos);
+            console.log('line blobbed: ' + pos + ' ' + strblob);
+            strblob += ' ';
+            mysqlConsoleNewline();
         }
     }
 }
 
-p.onopen = function (session) {
-    this.sqlSession = session;
+conn.onopen = function (session) {
+    globalSession = session;
     console.log('wamp connection open');
 
 
     console.log('creating session');
-    var tmpTimer = this.startWaiting(); 
+    var tmpTimer = startWaiting(); 
 
+    //console.log('requesting session with login,\n id: ' + $.cookie('session_id') + " enc_pw: " + $.cookie('enc_pw'));
     var accountSessionName = $.cookie('session_id');
     var accountSessionEncPW = $.cookie('enc_pw'); 
     console.log('creating session');
-
     session.call('com.mysql.console.requestSession', [accountSessionName, accountSessionEncPW])
       .then(function (sessionName) {
-        this.stopWaiting(tmpTimer);
-
+        stopWaiting(tmpTimer);
         session.call('com.mysql.console.giveBone', [sessionName]).then(function (timeoutLength){
             console.log('initial timeoutLength = ' + timeoutLength);
-            this.newPrompt();
-            foodChain.bind(this)('com.mysql.console.giveBone', [sessionName], timeoutLength);
-        }.bind(this), function (err){
+            foodChain('com.mysql.console.giveBone', [sessionName], timeoutLength);
+        }, function (err){
             console.log(err);
-            this.stopWaiting(tmpTimer);
-            this.lockInput();
-            this.insertResponse({error:'Could not lease session.  Expect to be timed out.'});
-        }.bind(this));
+            stopWaiting(tmpTimer);
+            lockInput();
+            insertResponse({error:'Could not lease session.  Expect to be timed out.'});
+        });
 
         
         function foodChain(rpc, args, timeoutLength){
@@ -243,45 +186,39 @@ p.onopen = function (session) {
             
             if(timeoutLength < 0){
                 console.log('Lease refuesed in foodchain!!!');
-                this.lockInput();
-                this.insertResponse({error: 'giveBone returned with ' + timeoutLength + 
+                lockInput();
+                insertResponse({error: 'giveBone returned with ' + timeoutLength + 
                   '!!! Session has been closed on Server.'}); 
                 return;
             }
  
             session.call(rpc, args).then(function (newTimeout){
-                this.watchdogTimer = setTimeout(foodChain.bind(this), 
-                 timeoutLength*500, rpc, args, newTimeout);
-            }.bind(this),function (err) {
+                watchdogTimer = setTimeout(foodChain, timeoutLength*500, rpc, args, newTimeout);
+            },function (err) {
                 console.log(err);
-                this.stopWaiting(tmpTimer);
-                this.lockInput();
-                this.insertResponse({error:'Server does not have giveBone registered!!!'});
-            }.bind(this));
+                stopWaiting(tmpTimer);
+                lockInput();
+                insertResponse({error:'Server does not have giveBone registered!!!'});
+            });
         }
         
         console.log('recieved session name: ' + sessionName);
-        this.sqlSessionName = sessionName;
-       
-        console.log('foodChain delegated');
+        thisSessionName = sessionName;
+        $('input.mysql-console-input').keydown(enterAction);
+        console.log('keydown event handler bound');
             
-    }.bind(this), function (err) {
+    }, function (err) {
         console.log(err);
-        this.lockInput();
-        this.stopWaiting(tmpTimer);
-        this.insertResponse({error:"Session request rejected.  For more info check the console."});
-    }.bind(this));
+        lockInput();
+        stopWaiting(tmpTimer);
+        insertResponse({error:"Session request rejected.  For more info check the console."});
+    });
 
     console.log('wamp event registration complete');
 }
 
-p = undefined;
 
-/*
 $(document).ready(function(){
     console.log('page ready');
-    mysqlConsole = new MysqlConsole('testConsole', 'ws://localhost:8081/ws', 'realm1')
-    mysqlConsole.open();
+    conn.open();
 });
-*/
- 
